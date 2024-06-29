@@ -14,12 +14,12 @@ public class Book {
     Book(){
     }
 
-    public String getID() {
-        return ID;
+    public String getBookID() {
+        return BookID;
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setID(String BookID) {
+        this.BookID = BookID;
     }
 
     public String getTitle() {
@@ -34,7 +34,7 @@ public class Book {
         return ISBN;
     }
 
-    public voBookID setISBN(String ISBN) {
+    public void setISBN(String ISBN) {
         this.ISBN = ISBN;
     }
 
@@ -42,7 +42,7 @@ public class Book {
         return Author;
     }
 
-    public voBookID setAuthor(String author) {
+    public void setAuthor(String author) {
         Author = author;
     }
 
@@ -50,7 +50,7 @@ public class Book {
         return Category;
     }
 
-    public voBookID setCategory(String category) {
+    public void setCategory(String category) {
         Category = category;
     }
 
@@ -58,7 +58,7 @@ public class Book {
         return Status;
     }
 
-    public voBookID setStatus(String status) {
+    public void setStatus(String status) {
         Status = status;
     }
 
@@ -66,11 +66,11 @@ public class Book {
         return PubDate;
     }
 
-    public voBookID setPubDate(String pubDate) {
+    public void setPubDate(String pubDate) {
         PubDate = pubDate;
     }
 
-    @OverrBookIDe
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -78,12 +78,12 @@ public class Book {
         return Objects.equals(BookID, book.BookID) && Objects.equals(Title, book.Title) && Objects.equals(ISBN, book.ISBN) && Objects.equals(Author, book.Author) && Objects.equals(Category, book.Category) && Objects.equals(Status, book.Status) && Objects.equals(PubDate, book.PubDate);
     }
 
-    @OverrBookIDe
+    @Override
     public int hashCode() {
         return Objects.hash(BookID, Title, ISBN, Author, Category, Status, PubDate);
     }
 
-    @OverrBookIDe
+    @Override
     public String toString() {
         return "Book{" +
                 "BookID='" + BookID + '\'' +

@@ -57,53 +57,22 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(ID, person.ID) && Objects.equals(Name, person.Name) && Objects.equals(Email, person.Email) && Objects.equals(PhnNo, person.PhnNo);
+        return Objects.equals(MemID, person.MemID) && Objects.equals(Name, person.Name) && Objects.equals(Email, person.Email) && Objects.equals(PhnNo, person.PhnNo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID, Name, Email, PhnNo);
+        return Objects.hash(MemID, Name, Email, PhnNo);
     }
 
     @Override
     public String toString() {
         return "Person{" +
-                "ID='" + ID + '\'' +
+                "ID='" + MemID + '\'' +
                 ", Name='" + Name + '\'' +
                 ", Address='" + Address + '\'' +
                 ", Email='" + Email + '\'' +
                 ", PhnNo='" + PhnNo + '\'' +
                 '}';
     }
-}
-public class Member extends Person{
-    private String Role;
-
-    Member(){
-    }
-
-    public String getRole() {
-        return Role;
-    }
-
-    public void setRole(String role) {
-        Role = role;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Member member = (Member) o;
-        return Objects.equals(Role, member.Role);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), Role);
-    }
-}
-public class Faculty extends Member{
-    setRole(Faculty);
 }
