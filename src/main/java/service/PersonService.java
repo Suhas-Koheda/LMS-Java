@@ -1,11 +1,10 @@
 package service;
 
-import exceptions.DataBaseConnError;
-import exceptions.PersonNotFoundException;
-import exceptions.PersonExistsException;
+import exceptions.*;
 import model.Person;
 
 public interface PersonService {
     public Person save(Person person) throws PersonExistsException;
     public Person view(Person person) throws PersonNotFoundException;
+    public Person update(Person person,String Property,String newValue) throws PersonNotFoundException, MemberIDChangeException,UserRoleNotFoundException;
 }

@@ -2,12 +2,11 @@ package repository;
 
 import Credentials.Creds;
 import com.mongodb.client.*;
-import exceptions.DataBaseConnError;
-import exceptions.PersonExistsException;
-import exceptions.PersonNotFoundException;
+import exceptions.*;
 import model.Person;
 import org.bson.Document;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.Optional;
 
 public class PersonRepo {
@@ -52,22 +51,47 @@ public class PersonRepo {
         return existingDoc == null ? Optional.empty() : Optional.of(person);
     }
     public Person ViewDetails(Person person) throws PersonNotFoundException {
-        MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
         MongoCollection<Document> collection = database.getCollection(person.getRole()+"s");
         Document filter = new Document("MemID", person.getMemID());
         Document documents = collection.find(filter).first();
 
         if (documents != null) {
             documents.remove("_id");
-            person.setName(documents.getString("Name"));
-            person.setAddress(documents.getString("Address"));
-            person.setEmail(documents.getString("Email"));
-            person.setPhnNo(documents.getString("PhoneNo"));
-            person.setRole(documents.getString("Role"));
+            return UpdatePersonfromBSON(person,documents);
         } else {
             throw new PersonNotFoundException(" ");
         }
-        return person;
     }
 
+    public Person UpdateDetails(Person person,String Property,String newValue) throws PersonNotFoundException, MemberIDChangeException, UserRoleNotFoundException {
+        MongoCollection<Document> collection = database.getCollection(person.getRole()+"s");
+        Document filter = new Document("MemID", person.getMemID());
+        Document documents = collection.find(filter).first();
+        if((Property.equals("MemID"))) {
+            throw new MemberIDChangeException("Cannot change the Member id itself ");
+        }
+        if (!person.getRole().equals("Student") && !person.getRole().equals("Teacher")) {
+            throw new UserRoleNotFoundException("The entered Role doesn't exist");
+        }
+        else{
+            if (documents != null) {
+                documents.remove("_id");
+                Document update = new Document("$set", new Document(Property, newValue));
+                collection.updateOne(filter, update);
+                Document updateddocument = collection.find(filter).first();
+                assert updateddocument != null;
+                return UpdatePersonfromBSON(person, updateddocument);
+            }
+            throw new PersonNotFoundException(" ");
+        }
+    }
+
+    public Person UpdatePersonfromBSON(Person person,Document documents) {
+        person.setName(documents.getString("Name"));
+        person.setAddress(documents.getString("Address"));
+        person.setEmail(documents.getString("Email"));
+        person.setPhnNo(documents.getString("PhoneNo"));
+        person.setRole(documents.getString("Role"));
+        return person;
+    }
 }

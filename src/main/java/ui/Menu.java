@@ -1,8 +1,10 @@
 package ui;
 
 import controller.PersonController;
+import exceptions.MemberIDChangeException;
 import exceptions.PersonExistsException;
 import exceptions.PersonNotFoundException;
+import exceptions.UserRoleNotFoundException;
 import model.Person;
 import repository.PersonRepo;
 import service.PersonIMPL;
@@ -62,6 +64,30 @@ public class Menu {
             }
         }
         catch (PersonNotFoundException pe){
+            System.out.println(pe.getMessage());
+        }
+    }
+
+    public void updateRegistration(){
+        Person p = new Person();
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter MemID: \n");
+        p.setMemID(sc.nextLine());
+        System.out.print("Enter Role: ");
+        p.setRole(sc.nextLine());
+        System.out.println("Enter the value to be updated");
+        String key=sc.nextLine();
+        System.out.println("Enter the new value");
+        String newValue=sc.nextLine();
+        sc.close();
+        PersonController pc = Factory.getPersonController();
+        try{
+            Person updatedPerson = pc.update(p,key, newValue);
+            if (updatedPerson != null) {
+                System.out.println("Person updated successfully");
+                System.out.println(updatedPerson.toString());
+            }
+        } catch (PersonNotFoundException | MemberIDChangeException | UserRoleNotFoundException pe) {
             System.out.println(pe.getMessage());
         }
     }

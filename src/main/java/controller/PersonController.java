@@ -1,7 +1,9 @@
 package controller;
 
+import exceptions.MemberIDChangeException;
 import exceptions.PersonExistsException;
 import exceptions.PersonNotFoundException;
+import exceptions.UserRoleNotFoundException;
 import model.Person;
 import service.PersonService;
 
@@ -15,5 +17,8 @@ public class PersonController {
     }
     public Person view(Person p) throws PersonNotFoundException {
         return this.ps.view(p);
+    }
+    public Person update(Person p,String Property,String newValue) throws PersonNotFoundException, MemberIDChangeException, UserRoleNotFoundException {
+        return this.ps.update(p,Property,newValue);
     }
 }

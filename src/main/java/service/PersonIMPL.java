@@ -1,9 +1,13 @@
 package service;
 
+import exceptions.MemberIDChangeException;
 import exceptions.PersonExistsException;
 import exceptions.PersonNotFoundException;
+import exceptions.UserRoleNotFoundException;
 import model.Person;
 import repository.PersonRepo;
+
+import javax.management.relation.RoleNotFoundException;
 
 public class PersonIMPL implements PersonService{
     private PersonRepo pr;
@@ -24,6 +28,22 @@ public class PersonIMPL implements PersonService{
             throw new PersonNotFoundException("Sorry the document requested doesnot exist");
         }else {
             return pr.ViewDetails(person);
+        }
+    }
+
+    @Override
+    public Person update(Person person,String Property,String newValue) throws PersonNotFoundException, MemberIDChangeException, UserRoleNotFoundException {
+        if(Property.equals("MemID")){
+            throw new MemberIDChangeException("Cannot change the Member id itself! ");
+        }
+        if(!(person.getRole().equals("Student"))||!(person.getRole().equals("Teacher"))){
+            throw new UserRoleNotFoundException("The entered Role doesnt exist");
+        }
+        if(pr.CheckPerson(person).isEmpty()){
+            throw new PersonNotFoundException("Sorry the document requested doesnot exist");
+        }
+        else {
+            return pr.UpdateDetails(person,Property,newValue);
         }
     }
 }
