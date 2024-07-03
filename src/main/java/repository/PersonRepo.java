@@ -1,5 +1,6 @@
 package repository;
 
+import Credentials.Creds;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -10,8 +11,8 @@ import model.Person;
 import org.bson.Document;
 
 public class PersonRepo {
-
-    private static final String CONNECTION_STRING = "mongodb+srv://spamsharmask:skqwerty@test.zt5blxl.mongodb.net/?retryWrites=true&w=majority&appName=test";
+    static Creds cd=new Creds();
+    private static final String CONNECTION_STRING = "mongodb+srv://"+cd.getUSERNAME()+":"+cd.getPASSWORD()+"@test.zt5blxl.mongodb.net/?retryWrites=true&w=majority&appName=test";
     private static final String DATABASE_NAME = "PeopleData";
 
     public Person writePerson(Person person) throws PersonExistsException, DataBaseConnError {
