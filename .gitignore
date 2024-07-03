@@ -38,4 +38,4 @@ build/
 .DS_Store
 
 ###Credentials
-src/main/java/Creds.java
+src/main/java/Credentials
