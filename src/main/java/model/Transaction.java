@@ -1,4 +1,4 @@
-package com.LMSJava.model;
+package model;
 
 public class Transaction {
     private String MemID;

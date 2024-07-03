@@ -1,5 +1,5 @@
-import com.LMSJava.model.Person;
-import com.LMSJava.util.ReadData;
+import model.Person;
+import util.ReadData;
 
 public class Main {
     public static void main(String[] args){

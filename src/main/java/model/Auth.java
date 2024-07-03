@@ -1,4 +1,4 @@
-package com.LMSJava.model;
+package model;
 
 public class Auth {
     private String MemID;

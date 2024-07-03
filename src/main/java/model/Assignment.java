@@ -1,4 +1,4 @@
-package com.LMSJava.model;
+package model;
 
 public class Assignment {
     private int TotalMarks;

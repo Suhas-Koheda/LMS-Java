@@ -1,4 +1,4 @@
-package com.LMSJava.model;
+package model;
 
 import java.util.Objects;
 
