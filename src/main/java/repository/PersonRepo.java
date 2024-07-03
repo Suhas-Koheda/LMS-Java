@@ -10,27 +10,21 @@ import exceptions.PersonExistsException;
 import model.Person;
 import org.bson.Document;
 
+import java.util.Optional;
+
 public class PersonRepo {
-    private static final String CONNECTION_STRING = "mongodb+srv://"+ Creds.getUSERNAME()+":"+Creds.getPASSWORD()+"@test.zt5blxl.mongodb.net/?retryWrites=true&w=majority&appName=test";
+    private static final String CONNECTION_STRING = "mongodb+srv://" + Creds.getUSERNAME() + ":" + Creds.getPASSWORD() + "@test.zt5blxl.mongodb.net/?retryWrites=true&w=majority&appName=test";
     private static final String DATABASE_NAME = "PeopleData";
+    private static final MongoClient mongoClient = MongoClients.create(CONNECTION_STRING);
+    private static final MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
 
-    public Person writePerson(Person person) throws PersonExistsException, DataBaseConnError {
+    public Person writePerson(Person person) {
         try (MongoClient mongoClient = MongoClients.create(CONNECTION_STRING)) {
-            MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
-
             if (person.getRole().equals("Student")) {
                 MongoCollection<Document> collection = database.getCollection("Students");
-
-                // Check if the student with the same ID already exists
-                Document filter = new Document("ID", person.getMemID());
-                Document existingDoc = collection.find(filter).first();
-                if (existingDoc != null) {
-                    throw new PersonExistsException("Student with ID " + person.getMemID() + " already exists");
-                }
-
                 // Insert the new student
-                Document doc = new Document("name", person.getName())
-                        .append("ID", person.getMemID())
+                Document doc = new Document("ID", person.getMemID())
+                        .append("name", person.getName())
                         .append("Address", person.getAddress())
                         .append("Email", person.getEmail())
                         .append("PhoneNo", person.getPhnNo())
@@ -40,17 +34,8 @@ public class PersonRepo {
             }
             if (person.getRole().equals("Teacher")) {
                 MongoCollection<Document> collection = database.getCollection("Teachers");
-
-                // Check if the teacher with the same ID already exists
-                Document filter = new Document("ID", person.getMemID());
-                Document existingDoc = collection.find(filter).first();
-                if (existingDoc != null) {
-                    throw new PersonExistsException("Teacher with ID " + person.getMemID() + " already exists");
-                }
-
-                // Insert the new teacher
-                Document doc = new Document("name", person.getName())
-                        .append("ID", person.getMemID())
+                Document doc = new Document("ID", person.getMemID())
+                        .append("name", person.getName())
                         .append("Address", person.getAddress())
                         .append("Email", person.getEmail())
                         .append("PhoneNo", person.getPhnNo())
@@ -60,5 +45,12 @@ public class PersonRepo {
             }
             return person;
         }
+    }
+    public Optional<Person> CheckPerson(Person person) {
+        MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
+        MongoCollection<Document> collection = database.getCollection(person.getRole()+"s");
+        Document filter = new Document("ID", person.getMemID());
+        Document existingDoc = collection.find(filter).first();
+        return existingDoc == null ? Optional.empty() : Optional.of(person);
     }
 }
