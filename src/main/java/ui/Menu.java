@@ -11,6 +11,8 @@ import java.util.Scanner;
 
 public class Menu {
     public Menu() {
+    }
+    public void NewRegistration(){
         Person p = new Person();
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter MemID: ");
