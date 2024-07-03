@@ -21,4 +21,10 @@ public class PersonController {
     public Person update(Person p,String Property,String newValue) throws PersonNotFoundException, MemberIDChangeException, UserRoleNotFoundException {
         return this.ps.update(p,Property,newValue);
     }
+    public void delete(Person p) throws PersonNotFoundException {
+        this.ps.delete(p);
+    }
+    public void viewALl(String Role) throws UserRoleNotFoundException {
+        this.ps.viewAll(Role);
+    }
 }

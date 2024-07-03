@@ -7,8 +7,6 @@ import exceptions.UserRoleNotFoundException;
 import model.Person;
 import repository.PersonRepo;
 
-import javax.management.relation.RoleNotFoundException;
-
 public class PersonIMPL implements PersonService{
     private PersonRepo pr;
     public PersonIMPL(PersonRepo pr){
@@ -44,6 +42,23 @@ public class PersonIMPL implements PersonService{
         }
         else {
             return pr.UpdateDetails(person,Property,newValue);
+        }
+    }
+
+    @Override
+    public void delete(Person person) throws PersonNotFoundException {
+        if(pr.CheckPerson(person).isEmpty()){
+            throw new PersonNotFoundException("Sorry the document requested doesnot exist");
+        }
+    }
+
+    @Override
+    public void viewAll(String Role) throws UserRoleNotFoundException {
+        if (!Role.equals("Student") && !Role.equals("Teacher")) {
+            throw new UserRoleNotFoundException("The entered Role doesn't exist");
+        }
+        else{
+            pr.viewAllPersons(Role);
         }
     }
 }

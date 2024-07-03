@@ -6,7 +6,6 @@ import exceptions.*;
 import model.Person;
 import org.bson.Document;
 
-import javax.management.relation.RoleNotFoundException;
 import java.util.Optional;
 
 public class PersonRepo {
@@ -93,5 +92,28 @@ public class PersonRepo {
         person.setPhnNo(documents.getString("PhoneNo"));
         person.setRole(documents.getString("Role"));
         return person;
+    }
+
+    public void DeletePerson(Person person) throws PersonNotFoundException{
+        MongoCollection<Document> collection = database.getCollection(person.getRole()+"s");
+        Document filter = new Document("MemID", person.getMemID());
+        Document existingDoc = collection.find(filter).first();
+        if (existingDoc == null) {
+            throw new PersonNotFoundException("Person with MemID " + person.getMemID() + " not found.");
+        }
+        collection.deleteOne(filter);
+    }
+
+    public void viewAllPersons(String Role){
+        MongoCollection<Document> collection = database.getCollection(Role+"s");
+        FindIterable<Document> documents = collection.find();
+        MongoCursor<Document> cursor = documents.iterator();
+        try {
+            while (cursor.hasNext()) {
+                System.out.println(cursor.next().toJson()+"\n");
+            }
+        } finally {
+            cursor.close();
+        }
     }
 }
