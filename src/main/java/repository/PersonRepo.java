@@ -11,8 +11,7 @@ import model.Person;
 import org.bson.Document;
 
 public class PersonRepo {
-    static Creds cd=new Creds();
-    private static final String CONNECTION_STRING = "mongodb+srv://"+cd.getUSERNAME()+":"+cd.getPASSWORD()+"@test.zt5blxl.mongodb.net/?retryWrites=true&w=majority&appName=test";
+    private static final String CONNECTION_STRING = "mongodb+srv://"+ Creds.getUSERNAME()+":"+Creds.getPASSWORD()+"@test.zt5blxl.mongodb.net/?retryWrites=true&w=majority&appName=test";
     private static final String DATABASE_NAME = "PeopleData";
 
     public Person writePerson(Person person) throws PersonExistsException, DataBaseConnError {
