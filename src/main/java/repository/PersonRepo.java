@@ -23,7 +23,8 @@ public class PersonRepo {
 
                 // Check if the student with the same ID already exists
                 Document filter = new Document("ID", person.getMemID());
-                if (collection.find(filter).first() != null) {
+                Document existingDoc = collection.find(filter).first();
+                if (existingDoc != null) {
                     throw new PersonExistsException("Student with ID " + person.getMemID() + " already exists");
                 }
 
@@ -35,13 +36,15 @@ public class PersonRepo {
                         .append("PhoneNo", person.getPhnNo())
                         .append("Role", person.getRole());
                 collection.insertOne(doc);
+                System.out.println("Inserted new student: " + doc.toJson());
             }
             if (person.getRole().equals("Teacher")) {
                 MongoCollection<Document> collection = database.getCollection("Teachers");
 
                 // Check if the teacher with the same ID already exists
                 Document filter = new Document("ID", person.getMemID());
-                if (collection.find(filter).first() != null) {
+                Document existingDoc = collection.find(filter).first();
+                if (existingDoc != null) {
                     throw new PersonExistsException("Teacher with ID " + person.getMemID() + " already exists");
                 }
 
@@ -53,10 +56,9 @@ public class PersonRepo {
                         .append("PhoneNo", person.getPhnNo())
                         .append("Role", person.getRole());
                 collection.insertOne(doc);
+                System.out.println("Inserted new teacher: " + doc.toJson());
             }
             return person;
-        } catch (Exception e) {
-            throw new DataBaseConnError("Internal database connection error occurred: " + e.getMessage());
         }
     }
 }
