@@ -13,7 +13,7 @@ import org.bson.Document;
 import java.util.Optional;
 
 public class PersonRepo {
-    private static final String CONNECTION_STRING = "mongodb+srv://" + Creds.getUSERNAME() + ":" + Creds.getPASSWORD() + "@test.zt5blxl.mongodb.net/?retryWrites=true&w=majority&appName=test";
+    private static final String CONNECTION_STRING = "mongodb+srv://" +Creds.getUSERNAME()+ ":" +Creds.getPASSWORD()+ "@test.zt5blxl.mongodb.net/?retryWrites=true&w=majority&appName=test&connectTimeoutMS=30000000&socketTimeoutMS=30000000";
     private static final String DATABASE_NAME = "PeopleData";
     private static final MongoClient mongoClient = MongoClients.create(CONNECTION_STRING);
     private static final MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
@@ -30,7 +30,6 @@ public class PersonRepo {
                         .append("PhoneNo", person.getPhnNo())
                         .append("Role", person.getRole());
                 collection.insertOne(doc);
-                System.out.println("Inserted new student: " + doc.toJson());
             }
             if (person.getRole().equals("Teacher")) {
                 MongoCollection<Document> collection = database.getCollection("Teachers");
@@ -41,9 +40,11 @@ public class PersonRepo {
                         .append("PhoneNo", person.getPhnNo())
                         .append("Role", person.getRole());
                 collection.insertOne(doc);
-                System.out.println("Inserted new teacher: " + doc.toJson());
             }
             return person;
+        }
+        catch(Exception e){
+            throw e;
         }
     }
     public Optional<Person> CheckPerson(Person person) {
