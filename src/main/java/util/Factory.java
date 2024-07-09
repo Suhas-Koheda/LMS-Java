@@ -1,14 +1,13 @@
 package util;
 
 import controller.BookController;
+import controller.ClassController;
 import controller.PersonController;
 import model.Person;
 import repository.BookRepo;
+import repository.ClassRepo;
 import repository.PersonRepo;
-import service.BookIMPL;
-import service.BookService;
-import service.PersonIMPL;
-import service.PersonService;
+import service.*;
 
 public class Factory {
     public static PersonRepo getPersonRepository(){
@@ -30,5 +29,16 @@ public class Factory {
 
     public static BookController getBookController() {
         return new BookController(getBookService());
+    }
+    public static ClassRepo getClassRepository() {
+        return new ClassRepo();
+    }
+
+    public static ClassService getClassService() {
+        return new ClassIMPL(getClassRepository());
+    }
+
+    public static ClassController getClassController() {
+        return new ClassController(getClassService());
     }
 }
