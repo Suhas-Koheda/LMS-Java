@@ -11,7 +11,7 @@ public class Book {
     private String Status;
     private String PubDate;
 
-    Book(){
+    public Book(){
     }
 
     public String getBookID() {

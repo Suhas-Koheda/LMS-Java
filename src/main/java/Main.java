@@ -1,9 +1,8 @@
-import repository.PersonRepo;
-import ui.Menu;
+import ui.ModelChoices;
 
-public class Main {
-    public static void main(String[] args) {
-        Menu menu=new Menu();
-        menu.displayMenu();
+class Main{
+    public static void main(String[] args){
+        ModelChoices modelChoices= new ModelChoices();
+        modelChoices.Display();
     }
 }

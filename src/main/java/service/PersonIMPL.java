@@ -50,6 +50,7 @@ public class PersonIMPL implements PersonService{
         if(pr.CheckPerson(person).isEmpty()){
             throw new PersonNotFoundException("Sorry the document requested doesnot exist");
         }
+        pr.DeletePerson(person);
     }
 
     @Override

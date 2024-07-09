@@ -6,15 +6,13 @@ import exceptions.PersonExistsException;
 import exceptions.PersonNotFoundException;
 import exceptions.UserRoleNotFoundException;
 import model.Person;
-import repository.PersonRepo;
-import service.PersonIMPL;
 import util.Factory;
 
 import java.util.Scanner;
 
-public class Menu {
+public class PersonMenu {
 
-    public Menu() {
+    public PersonMenu() {
     }
     public void displayMenu() {
         while (true) {
@@ -162,4 +160,5 @@ public class Menu {
             System.out.println(ur.getMessage());
         }
     }
+
 }
