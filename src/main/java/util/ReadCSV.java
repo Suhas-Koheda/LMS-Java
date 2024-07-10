@@ -17,10 +17,7 @@ public class ReadCSV {
         path = path.replaceAll("^\"|\"$", "");
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-
-
             while ((line = br.readLine()) != null) {
-                // Directly use the line as the ID
                 Person person = new Person();
                 person.setMemID(line.trim());  // Use trim() to remove any leading/trailing whitespace
                 person.setRole("Student");
