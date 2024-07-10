@@ -1,8 +1,11 @@
 package service;
 
 import model.Class;
+import model.Person;
 import repository.ClassRepo;
 import exceptions.ClassNotFoundException;
+
+import java.util.List;
 
 public class ClassIMPL implements ClassService {
     private ClassRepo classRepo;
@@ -48,5 +51,10 @@ public class ClassIMPL implements ClassService {
             // Handle or log the exception as needed
             System.err.println("An error occurred while viewing all classes: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<Person> addStudentsByCSV(Class c, String path) {
+        return classRepo.addStudentsByCSV(c, path);
     }
 }

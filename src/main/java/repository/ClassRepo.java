@@ -5,6 +5,7 @@ import com.mongodb.client.*;
 import model.Class;
 import model.Person;
 import org.bson.Document;
+import util.ReadCSV;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,12 +84,31 @@ public class ClassRepo {
             cursor.close();
         }
     }
-
+    private Class UpdateFromBson(Class c, Document doc){
+        c.setCourseName(doc.getString("CourseName"));
+        c.setSlot(doc.getString("Slot"));
+        c.setSlotSize(doc.getInteger("SlotSize"));
+        c.setStudents(fromDocumentList((List<Document>) doc.get("Students")));
+        return c;
+    }
     private Class fromDocument(Document doc) {
         Class c = new Class();
         c.setCourseName(doc.getString("CourseName"));
         c.setSlot(doc.getString("Slot"));
-        c.setSlotSize(doc.getInteger("SlotSize"));
+
+        // Safely cast or parse SlotSize
+        Object slotSize = doc.get("SlotSize");
+        if (slotSize instanceof Integer) {
+            c.setSlotSize((Integer) slotSize);
+        } else if (slotSize instanceof String) {
+            try {
+                c.setSlotSize(Integer.parseInt((String) slotSize));
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Invalid SlotSize format", e);
+            }
+        } else {
+            throw new RuntimeException("Unexpected SlotSize type: " + slotSize.getClass().getName());
+        }
 
         List<Document> studentDocs = (List<Document>) doc.get("Students");
         if (studentDocs != null) {
@@ -127,5 +147,12 @@ public class ClassRepo {
             docs.add(doc);
         }
         return docs;
+    }
+
+    public List<Person> addStudentsByCSV(Class c, String path) {
+        ReadCSV readcsv=new ReadCSV();
+        List<Person> students = readcsv.readFromCSV(path);
+        c.setStudents(students);
+        return students;
     }
 }

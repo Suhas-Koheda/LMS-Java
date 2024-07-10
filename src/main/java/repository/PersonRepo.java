@@ -2,100 +2,71 @@ package repository;
 
 import Credentials.Creds;
 import com.mongodb.client.*;
-import exceptions.*;
+import exceptions.PersonNotFoundException;
 import model.Person;
 import org.bson.Document;
 
 import java.util.Optional;
 
 public class PersonRepo {
-    private static final String CONNECTION_STRING = "mongodb+srv://" +Creds.getUSERNAME()+ ":" +Creds.getPASSWORD()+ "@test.zt5blxl.mongodb.net/?retryWrites=true&w=majority&appName=test&connectTimeoutMS=30000000&socketTimeoutMS=30000000";
+    private static final String CONNECTION_STRING = "mongodb+srv://" + Creds.getUSERNAME() + ":" + Creds.getPASSWORD() + "@test.zt5blxl.mongodb.net/?retryWrites=true&w=majority&appName=test";
     private static final String DATABASE_NAME = "PeopleData";
     private static final MongoClient mongoClient = MongoClients.create(CONNECTION_STRING);
     private static final MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
 
     public Person writePerson(Person person) {
-        try (MongoClient mongoClient = MongoClients.create(CONNECTION_STRING)) {
-            if (person.getRole().equals("Student")) {
-                MongoCollection<Document> collection = database.getCollection("Students");
-                // Insert the new student
-                Document doc = new Document("MemID", person.getMemID())
-                        .append("Name", person.getName())
-                        .append("Address", person.getAddress())
-                        .append("Email", person.getEmail())
-                        .append("PhoneNo", person.getPhnNo())
-                        .append("Role", person.getRole());
-                collection.insertOne(doc);
-            }
-            if (person.getRole().equals("Teacher")) {
-                MongoCollection<Document> collection = database.getCollection("Teachers");
-                Document doc = new Document("MemID", person.getMemID())
-                        .append("Name", person.getName())
-                        .append("Address", person.getAddress())
-                        .append("Email", person.getEmail())
-                        .append("PhoneNo", person.getPhnNo())
-                        .append("Role", person.getRole());
-                collection.insertOne(doc);
-            }
-            return person;
-        }
-        catch(Exception e){
-            throw e;
-        }
+        MongoCollection<Document> collection = database.getCollection(person.getRole() + "s");
+        Document doc = new Document("MemID", person.getMemID())
+                .append("Name", person.getName())
+                .append("Address", person.getAddress())
+                .append("Email", person.getEmail())
+                .append("PhoneNo", person.getPhnNo())
+                .append("Role", person.getRole());
+        collection.insertOne(doc);
+        return person;
     }
-    public Optional<Person> CheckPerson(Person person) {
-        MongoCollection<Document> collection = database.getCollection(person.getRole()+"s");
+
+    public Optional<Person> checkPerson(Person person) {
+        MongoCollection<Document> collection = database.getCollection(person.getRole() + "s");
         Document filter = new Document("MemID", person.getMemID());
         Document existingDoc = collection.find(filter).first();
         return existingDoc == null ? Optional.empty() : Optional.of(person);
     }
-    public Person ViewDetails(Person person) throws PersonNotFoundException {
-        MongoCollection<Document> collection = database.getCollection(person.getRole()+"s");
-        Document filter = new Document("MemID", person.getMemID());
-        Document documents = collection.find(filter).first();
 
-        if (documents != null) {
-            documents.remove("_id");
-            return UpdatePersonfromBSON(person,documents);
+    public Person viewDetails(Person person) throws PersonNotFoundException {
+        MongoCollection<Document> collection = database.getCollection(person.getRole() + "s");
+        Document filter = new Document("MemID", person.getMemID());
+        Document document = collection.find(filter).first();
+        if (document != null) {
+            return updatePersonFromBSON(person, document);
         } else {
-            throw new PersonNotFoundException(" ");
+            throw new PersonNotFoundException("Sorry, the document requested does not exist");
         }
     }
 
-    public Person UpdateDetails(Person person,String Property,String newValue) throws PersonNotFoundException, MemberIDChangeException, UserRoleNotFoundException {
-        MongoCollection<Document> collection = database.getCollection(person.getRole()+"s");
-        Document filter = new Document("MemID", person.getMemID());
-        Document documents = collection.find(filter).first();
-        if((Property.equals("MemID"))) {
-            throw new MemberIDChangeException("Cannot change the Member id itself ");
-        }
-        if (!person.getRole().equals("Student") && !person.getRole().equals("Teacher")) {
-            throw new UserRoleNotFoundException("The entered Role doesn't exist");
-        }
-        else{
-            if (documents != null) {
-                documents.remove("_id");
-                Document update = new Document("$set", new Document(Property, newValue));
-                collection.updateOne(filter, update);
-                Document updateddocument = collection.find(filter).first();
-                assert updateddocument != null;
-                return UpdatePersonfromBSON(person, updateddocument);
-            }
-            throw new PersonNotFoundException(" ");
-        }
-    }
-
-    public Person UpdatePersonfromBSON(Person person,Document documents) {
-        person.setName(documents.getString("Name"));
-        person.setAddress(documents.getString("Address"));
-        person.setEmail(documents.getString("Email"));
-        person.setPhnNo(documents.getString("PhoneNo"));
-        person.setRole(documents.getString("Role"));
+    private Person updatePersonFromBSON(Person person, Document document) {
+        person.setName(document.getString("Name"));
+        person.setAddress(document.getString("Address"));
+        person.setEmail(document.getString("Email"));
+        person.setPhnNo(document.getString("PhoneNo"));
+        person.setRole(document.getString("Role"));
         return person;
     }
 
-    public void DeletePerson(Person person) throws PersonNotFoundException{
-        MongoCollection<Document> collection = database.getCollection(person.getRole()+"s");
+    public Person updateDetails(Person person, String property, String newValue) throws PersonNotFoundException {
+        MongoCollection<Document> collection = database.getCollection(person.getRole() + "s");
+        Document filter = new Document("MemID", person.getMemID());
+        Document existingDoc = collection.find(filter).first();
+        if (existingDoc == null) {
+            throw new PersonNotFoundException("Person with MemID " + person.getMemID() + " not found.");
+        }
+        Document update = new Document("$set", new Document(property, newValue));
+        collection.updateOne(filter, update);
+        return updatePersonFromBSON(person, collection.find(filter).first());
+    }
+
+    public void deletePerson(Person person) throws PersonNotFoundException {
+        MongoCollection<Document> collection = database.getCollection(person.getRole() + "s");
         Document filter = new Document("MemID", person.getMemID());
         Document existingDoc = collection.find(filter).first();
         if (existingDoc == null) {
@@ -104,16 +75,11 @@ public class PersonRepo {
         collection.deleteOne(filter);
     }
 
-    public void viewAllPersons(String Role){
-        MongoCollection<Document> collection = database.getCollection(Role+"s");
+    public void viewAllPersons(String role) {
+        MongoCollection<Document> collection = database.getCollection(role + "s");
         FindIterable<Document> documents = collection.find();
-        MongoCursor<Document> cursor = documents.iterator();
-        try {
-            while (cursor.hasNext()) {
-                System.out.println(cursor.next().toJson()+"\n");
-            }
-        } finally {
-            cursor.close();
+        for (Document doc : documents) {
+            System.out.println(doc.toJson());
         }
     }
 }

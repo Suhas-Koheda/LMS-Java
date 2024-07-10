@@ -127,7 +127,7 @@ public class PersonMenu {
                 System.out.println("Person updated successfully");
                 System.out.println(updatedPerson.toString());
             }
-        } catch (PersonNotFoundException | MemberIDChangeException | UserRoleNotFoundException pe) {
+        } catch (Exception pe) {
             System.out.println(pe.getMessage());
         }
     }
@@ -154,7 +154,7 @@ public class PersonMenu {
         Role=sc.nextLine();
         PersonController pc = Factory.getPersonController();
         try{
-            pc.viewALl(Role);
+            pc.viewAll(Role);
         }
         catch(UserRoleNotFoundException ur){
             System.out.println(ur.getMessage());

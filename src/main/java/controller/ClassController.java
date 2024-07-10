@@ -1,8 +1,11 @@
 package controller;
 
 import model.Class;
+import model.Person;
 import service.ClassService;
 import exceptions.ClassNotFoundException;
+
+import java.util.List;
 
 public class ClassController {
     private ClassService classService;
@@ -29,5 +32,9 @@ public class ClassController {
 
     public void viewAll() {
         this.classService.viewAll();
+    }
+
+    public List<Person> addStudentsByCSV(Class c, String path) {
+        return this.classService.addStudentsByCSV(c, path);
     }
 }

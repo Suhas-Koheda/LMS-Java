@@ -45,13 +45,31 @@ public class Class {
         this.students = students;
     }
 
-    // Method to add a student
-    public void addStudent(Person student) {
-        this.students.add(student);
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
-    // Method to remove a student
-    public void removeStudent(Person student) {
-        this.students.remove(student);
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder studentsString = new StringBuilder();
+
+        for (int i = 0; i < students.size(); i++) {
+            studentsString.append(students.get(i).toString()).append("\n");
+            if (i < students.size() - 1) {
+                studentsString.append(", "); // Add a comma between students
+            }
+        }
+        return "Class{" +
+                "CourseName='" + CourseName + "\n" +
+                ", Slot='" + Slot + "\n" +
+                ", SlotSize=" + SlotSize +"\n"+
+                ", Students=[" + studentsString.toString() + "]"+
+                '}';
     }
 }

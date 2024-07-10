@@ -1,18 +1,18 @@
 package ui;
 
+import controller.ClassController;
+import controller.PersonController;
 import model.Class;
-import service.ClassService;
-import service.ClassIMPL;
-import repository.ClassRepo;
-import exceptions.ClassNotFoundException;
+import model.Person;
+import util.Factory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ClassMenu {
-    private ClassService classService;
 
     public ClassMenu() {
-        this.classService = new ClassIMPL(new ClassRepo()); // Adjust if using a Factory or Dependency Injection
     }
 
     public void displayMenu() {
@@ -66,9 +66,54 @@ public class ClassMenu {
 
         System.out.print("Enter Slot Size: ");
         c.setSlotSize(sc.nextInt());
+        sc.nextLine();
 
+        System.out.println("Add Students to Class\n 1. Add Students by ID by manually entering \t Enter 1 \n 2. Add Students by ID by adding CSV \t Enter 2 ");
+        int choice=sc.nextInt();
+        switch(choice) {
+            case (1): {
+                System.out.print("Enter Students ID (comma separated): ");
+                String[] studentIds = sc.nextLine().split(",");
+                List<Person> students = new ArrayList<>();
+                ClassController classController = Factory.getClassController();
+                PersonController personController = Factory.getPersonController();
+                for (int i = 0; i < studentIds.length; i++) {
+                    studentIds[i] = studentIds[i].trim();
+                    Person p = new Person();
+                    p.setMemID(studentIds[i]);
+                    p.setRole("Student");
+                    try {
+                        p = personController.view(p);
+                        students.add(p);
+                    } catch (Exception e) {
+                        System.out.println("Error adding student: " + e.getMessage());
+                    }
+                }
+                c.setStudents(students);
+                break;
+            }
+            case(2):{
+                sc.nextLine();
+                System.out.print("Enter CSV file path: ");
+                String path = sc.nextLine();
+                ClassController classController = Factory.getClassController();
+                PersonController personController = Factory.getPersonController();
+                List<Person> students = new ArrayList<>();
+                students = classController.addStudentsByCSV(c, path);
+                try {
+                    for (Person p : students) {
+                        p = personController.view(p);
+                    }
+                    c.setStudents(students);
+                } catch (Exception e) {
+                    System.out.println("Error adding students: " + e.getMessage());
+                }
+                break;
+            }
+        }
         try {
-            classService.save(c);
+            ClassController classController = Factory.getClassController();
+            classController.save(c);
             System.out.println("Class added successfully.");
         } catch (Exception e) {
             System.out.println("Error adding class: " + e.getMessage());
@@ -80,10 +125,12 @@ public class ClassMenu {
         System.out.print("Enter Course Name: ");
         String courseName = sc.nextLine();
 
+        ClassController classController = Factory.getClassController();
+
         try {
-            Class c = classService.view(courseName);
-            System.out.println("Class Details: " + c);
-        } catch (ClassNotFoundException e) {
+            Class c = classController.view(courseName);
+            System.out.println("Class Details: " + c.toString());
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -99,10 +146,12 @@ public class ClassMenu {
         System.out.print("Enter New Value: ");
         String newValue = sc.nextLine();
 
+        ClassController classController = Factory.getClassController();
+
         try {
-            Class c = classService.update(courseName, property, newValue);
+            Class c = classController.update(courseName, property, newValue);
             System.out.println("Class updated successfully. New Details: " + c);
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -112,17 +161,21 @@ public class ClassMenu {
         System.out.print("Enter Course Name: ");
         String courseName = sc.nextLine();
 
+        ClassController classController = Factory.getClassController();
+
         try {
-            classService.delete(courseName);
+            classController.delete(courseName);
             System.out.println("Class deleted successfully.");
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     private void viewAllClasses() {
+        ClassController classController = Factory.getClassController();
+
         try {
-            classService.viewAll();
+            classController.viewAll();
         } catch (Exception e) {
             System.out.println("Error viewing classes: " + e.getMessage());
         }

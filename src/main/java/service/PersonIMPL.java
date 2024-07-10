@@ -14,7 +14,7 @@ public class PersonIMPL implements PersonService{
     }
     @Override
     public Person save(Person person) throws PersonExistsException {
-        if(pr.CheckPerson(person).isPresent()){
+        if(pr.checkPerson(person).isPresent()){
             throw new PersonExistsException("Person already exists");
         }
         return this.pr.writePerson(person);
@@ -22,10 +22,10 @@ public class PersonIMPL implements PersonService{
 
     @Override
     public Person view(Person person) throws PersonNotFoundException {
-        if(pr.CheckPerson(person).isEmpty()){
+        if(pr.checkPerson(person).isEmpty()){
             throw new PersonNotFoundException("Sorry the document requested doesnot exist");
         }else {
-            return pr.ViewDetails(person);
+            return pr.viewDetails(person);
         }
     }
 
@@ -37,20 +37,20 @@ public class PersonIMPL implements PersonService{
         if(!(person.getRole().equals("Student"))||!(person.getRole().equals("Teacher"))){
             throw new UserRoleNotFoundException("The entered Role doesnt exist");
         }
-        if(pr.CheckPerson(person).isEmpty()){
+        if(pr.checkPerson(person).isEmpty()){
             throw new PersonNotFoundException("Sorry the document requested doesnot exist");
         }
         else {
-            return pr.UpdateDetails(person,Property,newValue);
+            return pr.updateDetails(person,Property,newValue);
         }
     }
 
     @Override
     public void delete(Person person) throws PersonNotFoundException {
-        if(pr.CheckPerson(person).isEmpty()){
+        if(pr.checkPerson(person).isEmpty()){
             throw new PersonNotFoundException("Sorry the document requested doesnot exist");
         }
-        pr.DeletePerson(person);
+        pr.deletePerson(person);
     }
 
     @Override
