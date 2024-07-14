@@ -7,6 +7,7 @@ import exceptions.PersonNotFoundException;
 import exceptions.UserRoleNotFoundException;
 import model.Person;
 import util.Factory;
+import util.ReadCSV;
 
 import java.util.Scanner;
 
@@ -56,38 +57,67 @@ public class PersonMenu {
         }
     }
     public void NewRegistration(){
-        Person p = new Person();
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter MemID: ");
-        p.setMemID(sc.nextLine());
-
-        System.out.print("Enter Name: ");
-        p.setName(sc.nextLine());
-
-        System.out.print("Enter Address: ");
-        p.setAddress(sc.nextLine());
-
-        System.out.print("Enter Email: ");
-        p.setEmail(sc.nextLine());
-
-        System.out.print("Enter Role (e.g., Student): ");
-        p.setRole(sc.nextLine());
-
-        System.out.print("Enter Phone Number: ");
-        p.setPhnNo(sc.nextLine());
-
+        System.out.println("Add Person to database\n 1. Add Person by manually entering his/her details \t Enter 1 \n 2. Add Person by adding details in form of CSV \t Enter 2 ");
+        Scanner sc=new Scanner(System.in);
+        int choice=sc.nextInt();
         PersonController pc = Factory.getPersonController();
-        try {
-            Person saved = pc.save(p);
-            if (saved != null) {
-                System.out.println("Person added successfully");
-            } else {
-                System.out.println("Person not added");
+        switch(choice) {
+            case (1):{
+                Person p = new Person();
+                System.out.print("Enter MemID: ");
+                p.setMemID(sc.nextLine());
+
+                System.out.print("Enter Name: ");
+                p.setName(sc.nextLine());
+
+                System.out.print("Enter Address: ");
+                p.setAddress(sc.nextLine());
+
+                System.out.print("Enter Email: ");
+                p.setEmail(sc.nextLine());
+
+                System.out.print("Enter Role (e.g., Student): ");
+                p.setRole(sc.nextLine());
+
+                System.out.print("Enter Phone Number: ");
+                p.setPhnNo(sc.nextLine());
+                try {
+                    Person saved = pc.save(p);
+                    if (saved != null) {
+                        System.out.println("Person added successfully");
+                    } else {
+                        System.out.println("Person not added");
+                    }
+                } catch (PersonExistsException e) {
+                    System.out.println("Person already exists");
+                }
+                break;
             }
-        } catch (PersonExistsException e) {
-            System.out.println("Person already exists");
+            case (2):{
+                sc.nextLine();
+                Person p = new Person();
+                System.out.print("Enter the path of the CSV file: ");
+                String path = sc.nextLine();
+                try {
+                    ReadCSV util = new ReadCSV();
+                    p = util.readMemberfromCSV(path);
+                } catch (Exception e) {
+                    System.out.println("Error reading from CSV: " + e.getMessage());
+                }
+                try {
+                    Person saved = pc.save(p);
+                    if (saved != null) {
+                        System.out.println("Person added successfully");
+                    } else {
+                        System.out.println("Person not added");
+                    }
+                } catch (PersonExistsException e) {
+                    System.out.println("Person already exists");
+                }
+                break;
         }
     }
+}
     public void ViewRegistration(){
         Person p = new Person();
         Scanner sc = new Scanner(System.in);
