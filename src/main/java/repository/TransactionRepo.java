@@ -17,9 +17,9 @@ public class TransactionRepo {
     public Transaction writeTransaction(Transaction transaction) {
         try (MongoClient mongoClient = MongoClients.create(CONNECTION_STRING)) {
             MongoCollection<Document> collection = database.getCollection("Transactions");
-            transaction.setTranID(String.valueOf(getLastTransactionID()+1));
+            transaction.setTranID(String.valueOf(getLastTransactionID()));
             transaction.setStatus("Issued");
-            Document doc = new Document("TransactionID", String.valueOf(getLastTransactionID()+1))
+            Document doc = new Document("TransactionID", String.valueOf(getLastTransactionID()))
                     .append("BookID", transaction.getBookID())
                     .append("MemberID", transaction.getMemID())
                     .append("IssueDate", transaction.getIssueDate())
@@ -120,7 +120,7 @@ public class TransactionRepo {
                 .first(); // Retrieve the first result of the sorted documents
 
         if (lastDocument != null) {
-            return Integer.parseInt(lastDocument.getString("TransactionID")); // Extract and return the TransactionID
+            return Integer.parseInt(lastDocument.getString("TransactionID"))+1; // Extract and return the TransactionID
         } else {
             return 1; // Or handle this case as appropriate (e.g., no documents found)
         }
