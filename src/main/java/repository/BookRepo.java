@@ -12,7 +12,7 @@ public class BookRepo {
     private static final String CONNECTION_STRING = "mongodb+srv://" + Creds.getUSERNAME() + ":" + Creds.getPASSWORD() + "@test.zt5blxl.mongodb.net/?retryWrites=true&w=majority&appName=test&connectTimeoutMS=30000000&socketTimeoutMS=30000000";
     private static final String DATABASE_NAME = "LibraryData";
     private static final MongoClient mongoClient = MongoClients.create(CONNECTION_STRING);
-    private static final MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
+    static final MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
 
     public Book writeBook(Book book) {
         try (MongoClient mongoClient = MongoClients.create(CONNECTION_STRING)) {

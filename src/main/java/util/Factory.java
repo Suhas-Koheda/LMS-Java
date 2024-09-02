@@ -7,6 +7,7 @@ import model.Person;
 import repository.BookRepo;
 import repository.ClassRepo;
 import repository.PersonRepo;
+import repository.TransactionRepo;
 import service.*;
 
 public class Factory {
@@ -41,4 +42,12 @@ public class Factory {
     public static ClassController getClassController() {
         return new ClassController(getClassService());
     }
+
+    public static TransactionRepo getTransactionRepository() {
+        return new TransactionRepo();
+    }
+    public static TransactionService getTransactionService() {
+        return new TransactionIMPL(getTransactionRepository());
+    }
+
 }
