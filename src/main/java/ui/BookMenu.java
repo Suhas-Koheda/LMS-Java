@@ -1,10 +1,8 @@
 package ui;
 
 import controller.BookController;
-import controller.PersonController;
 import exceptions.*;
 import model.Book;
-import model.Person;
 import util.Factory;
 import util.ReadCSV;
 

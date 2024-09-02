@@ -11,9 +11,10 @@ public class Book {
     private String Status;
     private String PubDate;
 
-    public Book(){
+    public Book(String bookID){
     }
 
+    public Book() {}
     public String getBookID() {
         return BookID;
     }

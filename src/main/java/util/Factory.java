@@ -3,6 +3,7 @@ package util;
 import controller.BookController;
 import controller.ClassController;
 import controller.PersonController;
+import controller.TransactionController;
 import model.Person;
 import repository.BookRepo;
 import repository.ClassRepo;
@@ -46,8 +47,13 @@ public class Factory {
     public static TransactionRepo getTransactionRepository() {
         return new TransactionRepo();
     }
+
     public static TransactionService getTransactionService() {
         return new TransactionIMPL(getTransactionRepository());
+    }
+
+    public static TransactionController getTransactionController() {
+        return new TransactionController(getTransactionService());
     }
 
 }

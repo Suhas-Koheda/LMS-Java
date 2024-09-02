@@ -100,4 +100,16 @@ public class BookRepo {
             cursor.close();
         }
     }
+
+    public Book checkAvailability(Book book) throws BookNotFoundException {
+        MongoCollection<Document> collection = database.getCollection("Books");
+        Document filter = new Document("BookID", book.getBookID());
+        Document existingDoc = collection.find(filter).first();
+        if (existingDoc != null) {
+            updateDetails(book, "Status", "In Library");
+            return book;
+        } else {
+            return null;
+        }
+    }
 }

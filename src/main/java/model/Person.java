@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Person {
@@ -9,8 +11,38 @@ public class Person {
     private String Email;
     private String PhnNo;
     private String Role;
+    ArrayList <String> BooksIssued = new ArrayList<String>();
 
-    public Person(){
+    public Person(){}
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "MemID='" + MemID + '\'' +
+                ", Name='" + Name + '\'' +
+                ", Address='" + Address + '\'' +
+                ", Email='" + Email + '\'' +
+                ", PhnNo='" + PhnNo + '\'' +
+                ", Role='" + Role + '\'' +
+                ", BooksIssued=" + BooksIssued +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(MemID, person.MemID) && Objects.equals(Name, person.Name) && Objects.equals(Address, person.Address) && Objects.equals(Email, person.Email) && Objects.equals(PhnNo, person.PhnNo) && Objects.equals(Role, person.Role) && Objects.deepEquals(BooksIssued, person.BooksIssued);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(MemID, Name, Address, Email, PhnNo, Role, BooksIssued);
+    }
+
+    public Person(String memID){
     }
 
     public String getMemID() {
@@ -45,6 +77,15 @@ public class Person {
         Email = email;
     }
 
+    public ArrayList<String> getBooksIssued() {
+        return BooksIssued;
+    }
+
+    public void setBooksIssued(String bookID,String TranID,String IssueDate,String ReturnDate) {
+        String[] bookDetails=new String[]{bookID,TranID,IssueDate,ReturnDate};
+        BooksIssued.add(Arrays.toString(bookDetails));
+    }
+
     public String getPhnNo() {
         return PhnNo;
     }
@@ -61,28 +102,4 @@ public class Person {
         Role = role;
     }
 
-    @Override
-    public String toString() {
-        return "Person{" +
-                "MemID='" + MemID + '\'' +
-                ", Name='" + Name + '\'' +
-                ", Address='" + Address + '\'' +
-                ", Email='" + Email + '\'' +
-                ", PhnNo='" + PhnNo + '\'' +
-                ", Role='" + Role + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
-        return Objects.equals(MemID, person.MemID) && Objects.equals(Name, person.Name) && Objects.equals(Address, person.Address) && Objects.equals(Email, person.Email) && Objects.equals(PhnNo, person.PhnNo) && Objects.equals(Role, person.Role);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(MemID, Name, Address, Email, PhnNo, Role);
-    }
 }

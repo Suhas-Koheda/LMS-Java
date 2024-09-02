@@ -115,9 +115,9 @@ public class PersonMenu {
                     System.out.println("Person already exists");
                 }
                 break;
+            }
         }
     }
-}
     public void ViewRegistration(){
         Person p = new Person();
         Scanner sc = new Scanner(System.in);
@@ -130,7 +130,7 @@ public class PersonMenu {
         try {
             Person returnedPerson=pc.view(p);
             if(returnedPerson != null){
-               System.out.println(returnedPerson.toString());
+                System.out.println(returnedPerson.toString());
             }
         }
         catch (PersonNotFoundException pe){

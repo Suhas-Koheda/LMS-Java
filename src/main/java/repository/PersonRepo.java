@@ -82,4 +82,16 @@ public class PersonRepo {
             System.out.println(doc.toJson());
         }
     }
+
+    public Person checkAvailability(Person person) throws PersonNotFoundException {
+        MongoCollection<Document> collection = database.getCollection("Students");
+        Document filter = new Document("MemID", person.getMemID());
+        Document existingDoc = collection.find(filter).first();
+        if (existingDoc == null) {
+            return null;
+        }
+        person.setRole("Student");
+        person=viewDetails(person);
+        return person;
+    }
 }
