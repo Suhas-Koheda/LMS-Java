@@ -11,10 +11,8 @@ public class Person {
     private String Email;
     private String PhnNo;
     private String Role;
-    ArrayList <String> BooksIssued = new ArrayList<String>();
 
     public Person(){}
-
     @Override
     public String toString() {
         return "Person{" +
@@ -24,7 +22,6 @@ public class Person {
                 ", Email='" + Email + '\'' +
                 ", PhnNo='" + PhnNo + '\'' +
                 ", Role='" + Role + '\'' +
-                ", BooksIssued=" + BooksIssued +
                 '}';
     }
 
@@ -33,13 +30,12 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(MemID, person.MemID) && Objects.equals(Name, person.Name) && Objects.equals(Address, person.Address) && Objects.equals(Email, person.Email) && Objects.equals(PhnNo, person.PhnNo) && Objects.equals(Role, person.Role) && Objects.deepEquals(BooksIssued, person.BooksIssued);
+        return Objects.equals(MemID, person.MemID) && Objects.equals(Name, person.Name) && Objects.equals(Address, person.Address) && Objects.equals(Email, person.Email) && Objects.equals(PhnNo, person.PhnNo) && Objects.equals(Role, person.Role);
     }
-
 
     @Override
     public int hashCode() {
-        return Objects.hash(MemID, Name, Address, Email, PhnNo, Role, BooksIssued);
+        return Objects.hash(MemID, Name, Address, Email, PhnNo, Role);
     }
 
     public Person(String memID){
@@ -77,14 +73,7 @@ public class Person {
         Email = email;
     }
 
-    public ArrayList<String> getBooksIssued() {
-        return BooksIssued;
-    }
 
-    public void setBooksIssued(String bookID,String TranID,String IssueDate,String ReturnDate) {
-        String[] bookDetails=new String[]{bookID,TranID,IssueDate,ReturnDate};
-        BooksIssued.add(Arrays.toString(bookDetails));
-    }
 
     public String getPhnNo() {
         return PhnNo;

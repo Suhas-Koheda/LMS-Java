@@ -33,21 +33,33 @@ public class TransactionIMPL implements TransactionService{
     }
 
     @Override
-    public Transaction deleteTransaction(Transaction transaction) throws BookNotFoundException, TransactionNotFoundException {
-
+    public void deleteTransaction(Transaction transaction) throws BookNotFoundException, TransactionNotFoundException {
+        if(transactionRepo.checkTransaction(transaction).isEmpty()){
+            throw new TransactionNotFoundException("Transaction not found");
+        }
         transactionRepo.deleteTransaction(transaction);
-        return transaction;
     }
 
     @Override
     public Transaction updateTransaction(Transaction transaction) throws BookNotFoundException, TransactionNotFoundException {
-        return null;
+        if(transactionRepo.checkTransaction(transaction).isEmpty()){
+            throw new TransactionNotFoundException("Transaction not found");
+        }
+        return transactionRepo.checkAvailability(transaction);
     }
 
     @Override
-    public Transaction getTransactionById(String transactionID) throws BookNotFoundException, TransactionNotFoundException {
-        return null;
+    public void getTransactionById(String transactionID) throws BookNotFoundException, TransactionNotFoundException {
+        Transaction transaction = new Transaction();
+        transaction.setTranID(transactionID);
+        if(transactionRepo.checkTransaction(transaction).isEmpty()){
+            throw new TransactionNotFoundException("Transaction not found");
+        }
+        transactionRepo.viewDetailsByID(transaction);
     }
 
-
+    @Override
+    public void viewAllTransactions() {
+        transactionRepo.viewAllTransactions();
+    }
 }

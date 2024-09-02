@@ -6,11 +6,13 @@ public class ModelChoices {
     private PersonMenu personMenu;
     private BookMenu bookMenu;
     private ClassMenu classMenu;
+    private TransactionMenu transactionMenu;
 
     public ModelChoices() {
         this.personMenu = new PersonMenu();
         this.bookMenu = new BookMenu();
         this.classMenu = new ClassMenu();
+        this.transactionMenu = new TransactionMenu();
     }
 
     public void displayModelMenu() {
@@ -20,7 +22,8 @@ public class ModelChoices {
             System.out.println("1. Manage Persons");
             System.out.println("2. Manage Books");
             System.out.println("3. Manage Classes");
-            System.out.println("4. Exit");
+            System.out.println("4. Manage Transactions");
+            System.out.println("5. Exit");
             System.out.print("Choose an option: ");
 
             int choice = sc.nextInt();
@@ -37,6 +40,9 @@ public class ModelChoices {
                     classMenu.displayMenu();   // Navigate to Class menu
                     break;
                 case 4:
+                    transactionMenu.displayMenu();// Navigate to Transaction menu
+                    break;
+                case 5:
                     System.out.println("Exiting...");
                     sc.close();
                     System.exit(0);

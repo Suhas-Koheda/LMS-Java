@@ -17,11 +17,14 @@ public class TransactionRepo {
     public Transaction writeTransaction(Transaction transaction) {
         try (MongoClient mongoClient = MongoClients.create(CONNECTION_STRING)) {
             MongoCollection<Document> collection = database.getCollection("Transactions");
-            Document doc = new Document("TransactionID", transaction.getTranID())
+            transaction.setTranID(String.valueOf(getLastTransactionID()+1));
+            transaction.setStatus("Issued");
+            Document doc = new Document("TransactionID", String.valueOf(getLastTransactionID()+1))
                     .append("BookID", transaction.getBookID())
                     .append("MemberID", transaction.getMemID())
                     .append("IssueDate", transaction.getIssueDate())
-                    .append("ReturnDate", transaction.getReturnDate());
+                    .append("ReturnDate", transaction.getReturnDate())
+                    .append("Status", "Issued");
             collection.insertOne(doc);
             return transaction;
         } catch (Exception e) {
@@ -34,19 +37,6 @@ public class TransactionRepo {
         Document filter = new Document("TransactionID", transaction.getTranID());
         Document existingDoc = collection.find(filter).first();
         return existingDoc == null ? Optional.empty() : Optional.of(transaction);
-    }
-
-    public Transaction viewTransactionDetails(Transaction transaction) throws TransactionNotFoundException {
-        MongoCollection<Document> collection = database.getCollection("Transactions");
-        Document filter = new Document("TransactionID", transaction.getTranID());
-        Document documents = collection.find(filter).first();
-
-        if (documents != null) {
-            documents.remove("_id");
-            return updateTransactionFromBSON(transaction, documents);
-        } else {
-            throw new TransactionNotFoundException("Transaction with ID " + transaction.getTranID() + " not found.");
-        }
     }
 
     public Transaction updateTransactionDetails(Transaction transaction, String property, String newValue) throws TransactionNotFoundException {
@@ -71,6 +61,7 @@ public class TransactionRepo {
         transaction.setMemID(documents.getString("MemberID"));
         transaction.setIssueDate(documents.getString("IssueDate"));
         transaction.setReturnDate(documents.getString("ReturnDate"));
+        transaction.setStatus(documents.getString("Status"));
         return transaction;
     }
 
@@ -102,10 +93,36 @@ public class TransactionRepo {
         Document filter = new Document("TransactionID", transaction.getTranID());
         Document existingDoc = collection.find(filter).first();
         if (existingDoc != null) {
-            updateTransactionDetails(transaction, "Status", "Completed");
+            updateTransactionDetails(transaction, "Status", "Returned");
             return transaction;
         } else {
             return null;
+        }
+    }
+
+    public void viewDetailsByID(Transaction transaction) throws TransactionNotFoundException {
+        MongoCollection<Document> collection = database.getCollection("Transactions");
+        Document filter = new Document("TransactionID", transaction.getTranID());
+        Document existingDoc = collection.find(filter).first();
+        if (existingDoc != null) {
+            existingDoc.remove("_id");
+            System.out.println(existingDoc.toJson());
+        } else {
+            throw new TransactionNotFoundException("Transaction with ID " + transaction.getTranID() + " not found.");
+        }
+    }
+
+    public int getLastTransactionID() {
+        MongoCollection<Document> collection = database.getCollection("Transactions");
+
+        Document lastDocument = collection.find()
+                .sort(new Document("TransactionID", -1)) // Sort by TransactionID in descending order
+                .first(); // Retrieve the first result of the sorted documents
+
+        if (lastDocument != null) {
+            return Integer.parseInt(lastDocument.getString("TransactionID")); // Extract and return the TransactionID
+        } else {
+            return 1; // Or handle this case as appropriate (e.g., no documents found)
         }
     }
 }
